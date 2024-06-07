@@ -1,8 +1,16 @@
 const request = require("supertest");
 const should = require("should");
 const app = require("../../index.js");
+const models = require("../../models.js");
 
 describe("GET /users는----------------------", () => {
+  const users = [
+    { name: "Woojin" },
+    { name: "Seungwon" },
+    { name: "Ganghyun" },
+  ];
+  before(() => models.sequelize.sync({ force: true }));
+  before(() => models.User.bulkCreate(users));
   describe("성공시", () => {
     it("유저객체를 담은 배열로 응답한다.", (done) => {
       // 서버 코드는 비동기 코드 이기 때문에 done 이라는 콜백 함수를 넣어줌
@@ -30,6 +38,13 @@ describe("GET /users는----------------------", () => {
 });
 
 describe("GET /users/:id는----------------------", () => {
+  const users = [
+    { name: "Woojin" },
+    { name: "Seungwon" },
+    { name: "Ganghyun" },
+  ];
+  before(() => models.sequelize.sync({ force: true }));
+  before(() => models.User.bulkCreate(users));
   describe("성공시", () => {
     it("id가 1인 유저 객체를 반환한다", (done) => {
       request(app)
@@ -51,6 +66,13 @@ describe("GET /users/:id는----------------------", () => {
 });
 
 describe("DELETE /users/:id는----------------------", () => {
+  const users = [
+    { name: "Woojin" },
+    { name: "Seungwon" },
+    { name: "Ganghyun" },
+  ];
+  before(() => models.sequelize.sync({ force: true }));
+  before(() => models.User.bulkCreate(users));
   describe("성공시", () => {
     it("204를 응답한다", (done) => {
       request(app).delete("/users/1").expect(204).end(done);
@@ -64,6 +86,13 @@ describe("DELETE /users/:id는----------------------", () => {
 });
 
 describe("POST /users는----------------------", () => {
+  const users = [
+    { name: "Woojin" },
+    { name: "Seungwon" },
+    { name: "Ganghyun" },
+  ];
+  before(() => models.sequelize.sync({ force: true }));
+  before(() => models.User.bulkCreate(users));
   describe("성공시", () => {
     let name = "chocho",
       body;
@@ -100,6 +129,13 @@ describe("POST /users는----------------------", () => {
 });
 
 describe("PUT /users/:id는----------------------", () => {
+  const users = [
+    { name: "Woojin" },
+    { name: "Seungwon" },
+    { name: "Ganghyun" },
+  ];
+  before(() => models.sequelize.sync({ force: true }));
+  before(() => models.User.bulkCreate(users));
   describe("성공시", () => {
     it("변경된 name 을 응답한다.", (done) => {
       const name = "Kimchi";
@@ -119,12 +155,16 @@ describe("PUT /users/:id는----------------------", () => {
         request(app).put("/users/3").send({}).expect(400).end(done);
       });
       it("없는 유저일 경우 404 응답.", (done) => {
-        request(app).put("/users/999").send({name: "JJangGu"}).expect(404).end(done);
+        request(app)
+          .put("/users/999")
+          .send({ name: "JJangGu" })
+          .expect(404)
+          .end(done);
       });
       it("중복된 이름일 경우 409응답", (done) => {
         request(app)
           .put("/users/2")
-          .send({ name: "Jinwoo" })
+          .send({ name: "Woojin" })
           .expect(409)
           .end(done);
       });

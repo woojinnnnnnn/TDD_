@@ -1,5 +1,9 @@
-const app = require('../index.js')
+const app = require("../index.js");
+const syncDb = require("./sync-db.js");
 
-app.listen(3000, function () {
-      console.log("Server is listening on port 3000!");
-    });
+syncDb().then((_) => {
+      console.log('Sync_ DATABASE')
+  app.listen(3000, function () {
+    console.log("Server is listening on port 3000!");
+  });
+});
